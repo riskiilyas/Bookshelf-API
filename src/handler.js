@@ -155,7 +155,7 @@ const editBookHandler = (request, h) => {
   }
 
   const response = h.response({
-    status: 'gagal',
+    status: 'fail',
     message: 'Gagal memperbarui buku. Id tidak ditemukan',
   });
 
@@ -171,7 +171,7 @@ const deleteBookHandler = (request, h) => {
     books.splice(index, 1);
     const response = h.response({
       status: 'success',
-      message: 'Note successfully Edited',
+      message: 'Buku berhasil dihapus',
     });
 
     response.code(200);
@@ -179,8 +179,8 @@ const deleteBookHandler = (request, h) => {
   }
 
   const response = h.response({
-    status: 'gagal',
-    message: 'Not Found',
+    status: 'fail',
+    message: 'Buku gagal dihapus. Id tidak ditemukan',
   });
 
   response.code(404);
