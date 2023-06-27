@@ -8,28 +8,28 @@ const routes = [
   },
   {
     method: 'POST',
-    path: '/notes',
-    handler: handler.addNoteHandler,
+    path: '/books',
+    handler: handler.addBookHandler,
   },
   {
     method: 'GET',
-    path: '/notes',
-    handler: handler.getNotesHandler,
+    path: '/books',
+    handler: handler.getBooksHandler,
   },
   {
     method: 'GET',
-    path: '/notes/{id}',
-    handler: handler.getNoteDetailHandler,
+    path: '/books/{id}',
+    handler: handler.getBookDetailHandler,
   },
   {
     method: 'PUT',
-    path: '/notes/{id}',
-    handler: handler.editNoteHandler,
+    path: '/books/{id}',
+    handler: handler.editBookHandler,
   },
   {
     method: 'DELETE',
-    path: '/notes/{id}',
-    handler: handler.deleteNoteHandler,
+    path: '/books/{id}',
+    handler: handler.deleteBookHandler,
   }];
 
 module.exports = routes;
