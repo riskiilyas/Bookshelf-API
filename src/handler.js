@@ -73,11 +73,28 @@ const addBookHandler = (request, h) => {
 };
 
 const getBooksHandler = (request, h) => {
+  const { name, reading, finished } = request.query;
+  let dataBooks = books;
+
+  if (name !== undefined) {
+    dataBooks = dataBooks.filter((it) => it.name.toLowerCase().includes(name.toLowerCase()));
+  }
+
+  if (reading !== undefined) {
+    dataBooks = dataBooks.filter((it) => it.reading === !!Number(reading));
+  }
+
+  if (finished !== undefined) {
+    dataBooks = dataBooks.filter((it) => it.finished === !!Number(finished));
+  }
+
   const response = h.response({
     status: 'success',
-    data: { books: books.map((it) => ({ id: it.id, name: it.name, publisher: it.publisher })) },
+    data: {
+      books: dataBooks.map((it) => ({ id: it.id, name: it.name, publisher: it.publisher })),
+    },
   });
-  response.status(200);
+  response.code(200);
   return response;
 };
 
@@ -91,6 +108,7 @@ const getBookDetailHandler = (request, h) => {
     });
 
     response.code(200);
+    return response;
   }
 
   const response = h.response({
@@ -129,6 +147,7 @@ const editBookHandler = (request, h) => {
   }
 
   const updatedAt = new Date().toISOString();
+  const finished = (pageCount === readPage);
   const index = books.findIndex((it) => it.id === id);
 
   if (index !== -1) {
@@ -141,6 +160,7 @@ const editBookHandler = (request, h) => {
       publisher,
       pageCount,
       readPage,
+      finished,
       reading,
       updatedAt,
     };
