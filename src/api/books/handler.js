@@ -1,6 +1,7 @@
 class BooksHandler {
-  constructor(service) {
+  constructor(service, validator) {
     this.service = service;
+    this.validator = validator;
 
     this.postBookHandler = this.postBookHandler.bind(this);
     this.getBooksHandler = this.getBooksHandler.bind(this);
@@ -10,30 +11,32 @@ class BooksHandler {
   }
 
   postBookHandler(request, h) {
-    const {
-      name, year, author, summary, publisher, pageCount, readPage, reading,
-    } = request.payload;
-
-    if (name === undefined) {
-      const response = h.response({
-        status: 'fail',
-        message: 'Gagal menambahkan buku. Mohon isi nama buku',
-      });
-      response.code(400);
-      return response;
-    }
-
-    if (readPage > pageCount) {
-      const response = h.response({
-        status: 'fail',
-        message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
-      });
-
-      response.code(400);
-      return response;
-    }
-
     try {
+      this.validator.validate(request.payload);
+
+      const {
+        name, year, author, summary, publisher, pageCount, readPage, reading,
+      } = request.payload;
+
+      if (name === undefined) {
+        const response = h.response({
+          status: 'fail',
+          message: 'Gagal menambahkan buku. Mohon isi nama buku',
+        });
+        response.code(400);
+        return response;
+      }
+
+      if (readPage > pageCount) {
+        const response = h.response({
+          status: 'fail',
+          message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
+        });
+
+        response.code(400);
+        return response;
+      }
+
       const bookId = this.service.addBook({
         name, year, author, summary, publisher, pageCount, readPage, reading,
       });
@@ -54,7 +57,7 @@ class BooksHandler {
         message: error.message,
       });
 
-      response.code(500);
+      response.code(error.statusCode);
       return response;
     }
   }
@@ -87,38 +90,39 @@ class BooksHandler {
         status: 'fail',
         message: error.message,
       });
-      response.code(404);
+      response.code(error.statusCode);
       return response;
     }
   }
 
   putBookByIdHandler(request, h) {
-    const { id } = request.params;
-    const {
-      name, year, author, summary, publisher, pageCount, readPage, reading,
-    } = request.payload;
-
-    if (name === undefined) {
-      const response = h.response({
-        status: 'fail',
-        message: 'Gagal memperbarui buku. Mohon isi nama buku',
-      });
-
-      response.code(400);
-      return response;
-    }
-
-    if (readPage > pageCount) {
-      const response = h.response({
-        status: 'fail',
-        message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
-      });
-
-      response.code(400);
-      return response;
-    }
-
     try {
+      this.validator.validate(request.payload);
+      const { id } = request.params;
+      const {
+        name, year, author, summary, publisher, pageCount, readPage, reading,
+      } = request.payload;
+
+      if (name === undefined) {
+        const response = h.response({
+          status: 'fail',
+          message: 'Gagal memperbarui buku. Mohon isi nama buku',
+        });
+
+        response.code(400);
+        return response;
+      }
+
+      if (readPage > pageCount) {
+        const response = h.response({
+          status: 'fail',
+          message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
+        });
+
+        response.code(400);
+        return response;
+      }
+
       this.service.editBookById(id, {
         name, year, author, summary, publisher, pageCount, readPage, reading,
       });
@@ -136,7 +140,7 @@ class BooksHandler {
         message: error.message,
       });
 
-      response.code(404);
+      response.code(error.statusCode);
       return response;
     }
   }
@@ -159,7 +163,7 @@ class BooksHandler {
         message: error.message,
       });
 
-      response.code(404);
+      response.code(error.statusCode);
       return response;
     }
   }

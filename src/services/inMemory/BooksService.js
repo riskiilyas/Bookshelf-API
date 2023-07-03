@@ -1,4 +1,6 @@
 const { nanoid } = require('nanoid');
+const InvariantError = require('../../exceptions/InvariantError');
+const NotFoundError = require('../../exceptions/NotFoundError');
 
 class BooksService {
   constructor() {
@@ -47,7 +49,7 @@ class BooksService {
 
     if (isSuccess) return id;
 
-    throw new Error('Buku gagal ditambahkan');
+    throw new InvariantError('Buku gagal ditambahkan');
   }
 
   getBooks(query) {
@@ -76,7 +78,7 @@ class BooksService {
 
   getBookById(id) {
     const book = this.books.filter((it) => it.id === id)[0];
-    if (!book) throw new Error('Buku tidak ditemukan');
+    if (!book) throw new NotFoundError('Buku tidak ditemukan');
     return book;
   }
 
@@ -92,7 +94,7 @@ class BooksService {
   }) {
     const index = this.books.findIndex((it) => it.id === id);
 
-    if (index === -1) throw new Error('Gagal memperbarui buku. Id tidak ditemukan');
+    if (index === -1) throw new NotFoundError('Gagal memperbarui buku. Id tidak ditemukan');
 
     const updatedAt = new Date().toISOString();
     const finished = (pageCount === readPage);
@@ -114,7 +116,7 @@ class BooksService {
 
   deleteBookById(id) {
     const index = this.books.findIndex((it) => it.id === id);
-    if (index === -1) throw new Error('Buku gagal dihapus. Id tidak ditemukan');
+    if (index === -1) throw new NotFoundError('Buku gagal dihapus. Id tidak ditemukan');
     this.books.splice(index, 1);
   }
 }
